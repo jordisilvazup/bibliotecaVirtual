@@ -1,5 +1,7 @@
 package br.com.zup.edu.biblioteca.model;
 
+import org.hibernate.validator.constraints.ISBN;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -16,12 +18,13 @@ public class Livro {
     private BigDecimal preco;
 
     @Column(unique = true, nullable = false)
-    private String ISBN;
+    @ISBN
+    private String isbn;
 
-    public Livro(String titulo, BigDecimal preco, String ISBN) {
+    public Livro(String titulo, BigDecimal preco,@ISBN String isbn) {
         this.titulo = titulo;
         this.preco = preco;
-        this.ISBN = ISBN;
+        this.isbn = isbn;
     }
 
     @Deprecated

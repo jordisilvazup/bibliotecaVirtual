@@ -3,6 +3,7 @@ package br.com.zup.edu.biblioteca.controller.requests;
 import br.com.zup.edu.biblioteca.model.Livro;
 import br.com.zup.edu.biblioteca.validators.UniqueValue;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.ISBN;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -16,17 +17,20 @@ public class CadastroLivroRequest {
     @JsonProperty @NotNull @PositiveOrZero
     private BigDecimal preco;
 
-    @JsonProperty @NotBlank @UniqueValue(domainClass= Livro.class, domainAtribute="ISBN")
-    private String ISBN;
+    @JsonProperty
+    @NotBlank
+    @UniqueValue(domainClass= Livro.class, domainAtribute="isbn")
+    @ISBN
+    private String isbn;
 
-    public CadastroLivroRequest(String titulo, BigDecimal preco, String ISBN) {
+    public CadastroLivroRequest(String titulo, BigDecimal preco, String isbn) {
         this.titulo = titulo;
         this.preco = preco;
-        this.ISBN = ISBN;
+        this.isbn = isbn;
     }
 
     public Livro paraLivro(){
-        return new Livro(titulo,preco,ISBN);
+        return new Livro(titulo,preco,isbn);
     }
 
 }
