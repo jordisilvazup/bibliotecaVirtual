@@ -19,6 +19,12 @@ public class CadastroLivroRequest {
     @JsonProperty @NotBlank @UniqueValue(domainClass= Livro.class, domainAtribute="ISBN")
     private String ISBN;
 
+    public CadastroLivroRequest(String titulo, BigDecimal preco, String ISBN) {
+        this.titulo = titulo;
+        this.preco = preco;
+        this.ISBN = ISBN;
+    }
+
     public Livro paraLivro(){
         return new Livro(titulo,preco,ISBN);
     }

@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 @Constraint(validatedBy = UniqueValueValidator.class)
 public @interface UniqueValue {
-    String message() default "Valor já cadastrado na base da dados";
+    String message() default "Já esta cadastrado na base da dados";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
     Class<?> domainClass();
