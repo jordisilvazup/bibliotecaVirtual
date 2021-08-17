@@ -35,7 +35,7 @@ class UniqueValueValidatorTest {
     @Test
     public void oISBNDeveSerUnico(){
         validator.initialize(caseTest);
-        final boolean valid = validator.isValid("99921-58-10-7", context);
+        final boolean valid = validator.isValid("978-8550800653", context);
         assertTrue(valid);
 
     }
@@ -43,10 +43,10 @@ class UniqueValueValidatorTest {
     @Test
     @Transactional
     public void oISBNNaoDeveSerUnico(){
-        final Livro tddComZupEdu = new Livro("TDD com zup edu", new BigDecimal("250.0"), "99921-58-10-7");
+        final Livro tddComZupEdu = new Livro("TDD com zup edu", new BigDecimal("250.0"), "978-8550800653");
         manager.persist(tddComZupEdu);
         validator.initialize(caseTest);
-        final boolean notValid = validator.isValid("99921-58-10-7", context);
+        final boolean notValid = validator.isValid("978-8550800653", context);
         assertFalse(notValid);
 
     }

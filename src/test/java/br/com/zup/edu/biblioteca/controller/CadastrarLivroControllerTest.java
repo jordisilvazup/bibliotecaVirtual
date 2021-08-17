@@ -36,7 +36,7 @@ class CadastrarLivroControllerTest {
 
     @Test
     public void deveCadastrarUmLivroERetornar201EIdDoLivroNaLocation() throws Exception{
-        CadastroLivroRequest livroRequest=new CadastroLivroRequest("TDD na Zup Edu",new BigDecimal("250.0"),"99921-58-10-7");
+        CadastroLivroRequest livroRequest=new CadastroLivroRequest("TDD na Zup Edu",new BigDecimal("250.0"),"978-8550804606");
         String request=mapper.writeValueAsString(livroRequest);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/livros")
@@ -47,12 +47,12 @@ class CadastrarLivroControllerTest {
 
     @Test
     public void naoDeveCadastrarUmLivroComISBNJaCadastrardoEDeveRetornar400EMensagemAmigavel() throws Exception{
-        Livro antigo=new Livro("TDD na Zup Edu",new BigDecimal("250.0"),"99921-58-10-7");
+        Livro antigo=new Livro("TDD na Zup Edu",new BigDecimal("250.0"),"978-8576082675");
         manager.persist(antigo);
-        CadastroLivroRequest livroRequest=new CadastroLivroRequest("TDD na Zup Edu",new BigDecimal("250.0"),"99921-58-10-7");
+        CadastroLivroRequest livroRequest=new CadastroLivroRequest("TDD na Zup Edu",new BigDecimal("250.0"),"978-8576082675");
         String request=mapper.writeValueAsString(livroRequest);
         ErrorMessage errorMessage =new ErrorMessage();
-        errorMessage.adicionarError("ISBN","Já esta cadastrado na base da dados");
+        errorMessage.adicionarError("isbn","Já esta cadastrado na base da dados");
         String response=mapper.writeValueAsString(errorMessage);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/livros")
