@@ -11,10 +11,13 @@ import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
 public class CadastroLivroRequest {
-    @JsonProperty @NotBlank
+    @JsonProperty
+    @NotBlank
     private String titulo;
 
-    @JsonProperty @NotNull @PositiveOrZero
+    @JsonProperty
+    @NotNull
+    @PositiveOrZero
     private BigDecimal preco;
 
     @JsonProperty
