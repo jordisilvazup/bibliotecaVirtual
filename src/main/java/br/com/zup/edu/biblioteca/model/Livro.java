@@ -24,7 +24,7 @@ public class Livro {
     @ISBN
     private String isbn;
 
-    @OneToMany(mappedBy = "livro", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "livro", cascade = CascadeType.ALL)
     private List<Exemplar> exemplares= new ArrayList<>();
 
     public Livro(String titulo, BigDecimal preco,@ISBN String isbn) {
@@ -41,7 +41,7 @@ public class Livro {
         return id;
     }
 
-    public void associarExemplar(Exemplar exemplar) {
+    public void associar(Exemplar exemplar) {
         exemplares.add(exemplar);
     }
 }

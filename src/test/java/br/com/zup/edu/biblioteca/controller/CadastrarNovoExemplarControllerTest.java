@@ -35,7 +35,7 @@ class CadastrarNovoExemplarControllerTest {
     void deveCadastrarUmExemplarCasoExistaOCadastroDoLivro() throws Exception {
         final Livro dddDaMassa = new Livro("DDD da massa", new BigDecimal("230.0"), "978-8550800653");
         repository.save(dddDaMassa);
-        CadastroExemplarRequest exemplarRequest=new CadastroExemplarRequest("LIVRE");
+        CadastroExemplarRequest exemplarRequest=new CadastroExemplarRequest("KAKA");
         final String request = mapper.writeValueAsString(exemplarRequest);
         mockMvc.perform(
                 post("/api/v1/livros/978-8550800653/exemplares")

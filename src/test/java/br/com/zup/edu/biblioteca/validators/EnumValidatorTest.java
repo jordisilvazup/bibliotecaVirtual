@@ -39,7 +39,7 @@ class EnumValidatorTest {
         assertFalse(valid);
     }
 
-    public static class EnumValidatorCaseTest implements ExisteCirculacao{
+    public static class EnumValidatorCaseTest implements ExisteEntradaNoEnum {
 
         @Override
         public String message() {
@@ -63,7 +63,7 @@ class EnumValidatorTest {
 
         @Override
         public Class<? extends Annotation> annotationType() {
-            return ExisteCirculacao.class;
+            return ExisteEntradaNoEnum.class;
         }
     }
 

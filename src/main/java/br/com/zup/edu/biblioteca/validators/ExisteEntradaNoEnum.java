@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD,ElementType.ANNOTATION_TYPE})
 @Constraint(validatedBy = EnumValidator.class)
-public @interface ExisteCirculacao {
+public @interface ExisteEntradaNoEnum {
     String message() default "Informado não existe";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

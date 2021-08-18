@@ -21,9 +21,12 @@ public class CadastrarLivroController {
 
     @PostMapping
     public ResponseEntity<?> cadastrarNovoLivro(@RequestBody @Valid CadastroLivroRequest livroRequest){
-        final Livro novoLivro = livroRequest.paraLivro();
+
+        Livro novoLivro = livroRequest.paraLivro();
         repository.save(novoLivro);
+
         URI location = UriComponentsBuilder.fromUriString("/api/v1/livros/{id}").buildAndExpand(novoLivro.getId()).toUri();
+
         return ResponseEntity.created(location).build();
     }
 }
