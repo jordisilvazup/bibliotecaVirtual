@@ -30,8 +30,10 @@ class CadastrarNovoUsuarioControllerTest {
 
     @Test
     void deveCadastrarUmUsuario() throws Exception{
+
         CadastroUsuarioRequest usuarioRequest = new CadastroUsuarioRequest("Jordi H.", "PADRAO");
         String request = mapper.writeValueAsString(usuarioRequest);
+
         mockMvc.perform(
                 post("/api/v1/usuarios")
                         .contentType(APPLICATION_JSON)
