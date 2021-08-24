@@ -44,14 +44,4 @@ public class Exemplar {
         this.emprestado=true;
         this.emprestimos.add(emprestimoDeExemplar);
     }
-
-    @Override
-    public String toString() {
-        return "Exemplar{" +
-                "id=" + id +
-                ", tipoCirculacao=" + tipoCirculacao +
-                ", livro=" + livro +
-                ", emprestado=" + emprestado +
-                '}';
-    }
 }

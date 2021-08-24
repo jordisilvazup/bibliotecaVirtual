@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.Objects;
 
@@ -57,7 +56,6 @@ public  class ValidacaoParaEmprestimoPorTipoDeUsuarioPesquisador implements Vali
 
             //1
             final Boolean naoExisteExemplaresDisponives = execTransacional.executor(() -> qtdExemplaresLivresQuery.getResultList().isEmpty());
-            System.out.println(naoExisteExemplaresDisponives);
             if (naoExisteExemplaresDisponives) {
                  errors.rejectValue("idLivro",null,"Nao ah exemplares disponiveis");
                  return errors;
