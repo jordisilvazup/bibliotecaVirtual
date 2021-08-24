@@ -18,6 +18,12 @@ public class CadastroEmprestimoDeExemplarRequest {
     @JsonProperty
     private Long idUsuario;
 
+    public CadastroEmprestimoDeExemplarRequest(Integer tempoDeEmprestimoEmDias, Long idLivro, Long idUsuario) {
+        this.tempoDeEmprestimoEmDias = tempoDeEmprestimoEmDias;
+        this.idLivro = idLivro;
+        this.idUsuario = idUsuario;
+    }
+
     public EmprestimoDeExemplar paraEmprestimoDeExemplar(Exemplar exemplar, Usuario usuario){
         if(usuario.getTipoUsuario().equals(TipoUsuario.PESQUISADOR)){
             return new EmprestimoDeExemplar(exemplar,usuario,60);

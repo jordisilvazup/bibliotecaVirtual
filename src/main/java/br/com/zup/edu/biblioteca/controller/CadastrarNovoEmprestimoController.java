@@ -15,7 +15,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.validation.Valid;
-
 import java.net.URI;
 
 import static br.com.zup.edu.biblioteca.model.TipoCirculacao.LIVRE;
@@ -63,7 +62,6 @@ public class CadastrarNovoEmprestimoController {
            exemplar= executorTransacional.executor(()-> {
                 return qtdExemplaresLivresQuery.setMaxResults(1).getSingleResult();
             });
-//            exemplar = qtdExemplaresLivresQuery.setMaxResults(1).getSingleResult();
         }
         //1
         else {
@@ -75,7 +73,6 @@ public class CadastrarNovoEmprestimoController {
             exemplar= executorTransacional.executor(()-> {
                 return qtdExemplaresLivresQuery.setMaxResults(1).getSingleResult();
             });
-//            exemplar = qtdExemplaresLivresQuery.setMaxResults(1).getSingleResult();
         }
 
         EmprestimoDeExemplar emprestimoDeExemplar = request.paraEmprestimoDeExemplar(exemplar, locatario);

@@ -15,7 +15,6 @@ public class EmprestimoDeExemplar {
     private Long id;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(nullable = false)
     private Exemplar exemplar;
 
     @ManyToOne
@@ -32,7 +31,9 @@ public class EmprestimoDeExemplar {
     private LocalDate emprestadoEm=LocalDate.now();
 
     public EmprestimoDeExemplar(Exemplar exemplar, Usuario usuario, Integer tempoDeEmprestimoEmDias) {
+
         this.exemplar = exemplar;
+        this.exemplar.associarEmprestimo(this);
         this.usuario = usuario;
         this.tempoDeEmprestimoEmDias = tempoDeEmprestimoEmDias;
 

@@ -68,13 +68,16 @@ public  class ValidacaoParaEmprestimoPorTipoDeUsuarioPadrao implements Validacao
             }
 
 
-            String busqueAquantidadeDeExemplaresLivres = "SELECT COUNT(e) FROM Exemplar e WHERE e.tipoCirculacao=:livre AND e.emprestado=:falso";
+            String busqueAquantidadeDeExemplaresLivres = "SELECT COUNT(e) FROM Exemplar e WHERE e.tipoCirculacao=:livre AND e.emprestado=:falso and e.livro=:livro";
+            String ExemplaresLivres = "SELECT e FROM Exemplar e WHERE e.tipoCirculacao=:livre AND e.emprestado=:falso and e.livro=:livro";
+            manager.createQuery(ExemplaresLivres).setParameter("livre", LIVRE).setParameter("livro", livroDesejado).setParameter("falso", false).getResultList().forEach(System.out::println);
             TypedQuery<Long> qtdExemplaresLivresQuery = manager.createQuery(busqueAquantidadeDeExemplaresLivres, Long.class);
             qtdExemplaresLivresQuery.setParameter("livre", LIVRE);
+            qtdExemplaresLivresQuery.setParameter("livro", livroDesejado);
             qtdExemplaresLivresQuery.setParameter("falso", false);
             qtdExemplaresLivresQuery.setLockMode(READ);
-            Integer qtdExemplaresLivres =execTransacional.executor(()-> qtdExemplaresLivresQuery.getSingleResult().intValue());
-
+            int qtdExemplaraaesLivres =execTransacional.executor(()-> qtdExemplaresLivresQuery.getSingleResult().intValue());
+            Integer qtdExemplaresLivres=qtdExemplaraaesLivres;
             //1
             if (qtdExemplaresLivres < 1) {
                  errors.rejectValue("idLivro",null,"Nao ah exemplares disponiveis");
