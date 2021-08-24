@@ -36,9 +36,10 @@ public class CadastrarNovoEmprestimoController {
     @PostMapping
     //3
     public ResponseEntity<?> cadastrarEmprestimo(@RequestBody @Valid CadastroEmprestimoDeExemplarRequest request) {
+
         EmprestimoDeExemplar emprestimoDeExemplar = strategyContext.execute(request);
 
-        final URI location = UriComponentsBuilder.fromUriString("api/v1/emprestimos/{id}").buildAndExpand(emprestimoDeExemplar.getId()).toUri();
+        final URI location = UriComponentsBuilder.fromUriString("/api/v1/emprestimos/{id}").buildAndExpand(emprestimoDeExemplar.getId()).toUri();
 
         return ResponseEntity.created(location).build();
     }

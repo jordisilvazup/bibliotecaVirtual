@@ -25,12 +25,8 @@ public class StrategyContext {
     public EmprestimoDeExemplar execute(CadastroEmprestimoDeExemplarRequest request) {
 
         Usuario usuario = manager.find(Usuario.class, request.getIdUsuario());
-        Livro livro= manager.find(Livro.class, request.getIdLivro());
+        Livro livro = manager.find(Livro.class, request.getIdLivro());
 
-
-        if (usuario.getTipoUsuario().equals(TipoUsuario.PADRAO)) {
-           return  new AlocarLivroParaUsuarioPadraoStrategy(manager).alocarLivro(usuario,livro, request.getTempoDeEmprestimoEmDias());
-        }
-          return  new AlocarLivroParaUsuarioPesquisadorStrategy(manager).alocarLivro(usuario,livro, request.getTempoDeEmprestimoEmDias());
+        return usuario.getTipoUsuario().getAlocacaoStrategy(manager).alocarLivro(usuario, livro, request.getTempoDeEmprestimoEmDias());
     }
 }
