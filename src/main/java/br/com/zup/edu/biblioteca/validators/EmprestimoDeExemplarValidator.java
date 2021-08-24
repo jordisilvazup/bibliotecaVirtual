@@ -29,6 +29,5 @@ public class EmprestimoDeExemplarValidator implements Validator {
         CadastroEmprestimoDeExemplarRequest request = (CadastroEmprestimoDeExemplarRequest) o;
         validators.forEach(c -> c.handler(errors, request));
 
-
     }
 }
