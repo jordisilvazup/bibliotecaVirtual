@@ -2,7 +2,7 @@ package br.com.zup.edu.biblioteca.controller;
 
 import br.com.zup.edu.biblioteca.controller.requests.CadastroEmprestimoDeExemplarRequest;
 import br.com.zup.edu.biblioteca.model.EmprestimoDeExemplar;
-import br.com.zup.edu.biblioteca.strategy.StrategyContext;
+import br.com.zup.edu.biblioteca.strategy.AlugaLivroStrategyContext;
 import br.com.zup.edu.biblioteca.validators.EmprestimoDeExemplarValidator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
@@ -17,12 +17,12 @@ import java.net.URI;
 public class CadastrarNovoEmprestimoController {
 
     //1
-    private final StrategyContext strategyContext;
+    private final AlugaLivroStrategyContext alugaLivroStrategyContext;
     //2
     private final EmprestimoDeExemplarValidator validator;
 
-    public CadastrarNovoEmprestimoController(StrategyContext strategyContext, EmprestimoDeExemplarValidator validator) {
-        this.strategyContext = strategyContext;
+    public CadastrarNovoEmprestimoController(AlugaLivroStrategyContext alugaLivroStrategyContext, EmprestimoDeExemplarValidator validator) {
+        this.alugaLivroStrategyContext = alugaLivroStrategyContext;
         this.validator = validator;
     }
 
@@ -37,7 +37,7 @@ public class CadastrarNovoEmprestimoController {
     //3
     public ResponseEntity<?> cadastrarEmprestimo(@RequestBody @Valid CadastroEmprestimoDeExemplarRequest request) {
 
-        EmprestimoDeExemplar emprestimoDeExemplar = strategyContext.execute(request);
+        EmprestimoDeExemplar emprestimoDeExemplar = alugaLivroStrategyContext.execute(request);
 
         final URI location = UriComponentsBuilder.fromUriString("/api/v1/emprestimos/{id}").buildAndExpand(emprestimoDeExemplar.getId()).toUri();
 

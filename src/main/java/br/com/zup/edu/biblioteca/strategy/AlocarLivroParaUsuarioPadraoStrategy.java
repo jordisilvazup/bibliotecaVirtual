@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 
 import static br.com.zup.edu.biblioteca.model.TipoCirculacao.LIVRE;
 import static javax.persistence.LockModeType.READ;
@@ -23,8 +24,11 @@ public class AlocarLivroParaUsuarioPadraoStrategy implements AlocarLivroStrategy
     }
 
     @Override
-    public EmprestimoDeExemplar alocarLivro(Usuario locatario, Livro livroDesejado, Integer tempoEmDias) {
-
+    @Transactional
+    public EmprestimoDeExemplar alocarLivro(AlugaLivroResource resource) {
+        Usuario locatario= resource.getLocatario();
+        Livro livroDesejado= resource.getLivro();
+        Integer tempoEmDias= resource.getTempoDeEmprestimoEmDias();
 
 
         String busqueAquantidadeDeExemplaresLivres = "SELECT  e FROM Exemplar e WHERE e.tipoCirculacao=:livre AND e.emprestado=:falso and e.livro=:livro";
@@ -34,6 +38,8 @@ public class AlocarLivroParaUsuarioPadraoStrategy implements AlocarLivroStrategy
                 .setParameter("livro", livroDesejado)
                 .setLockMode(READ)
                 .setMaxResults(1).getSingleResult();
+
+
 
         EmprestimoDeExemplar emprestimoDeExemplar = new EmprestimoDeExemplar(exemplar,locatario,tempoEmDias);
         manager.persist(emprestimoDeExemplar);

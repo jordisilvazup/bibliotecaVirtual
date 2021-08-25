@@ -14,12 +14,18 @@ import java.util.Objects;
 import static br.com.zup.edu.biblioteca.model.TipoCirculacao.LIVRE;
 import static br.com.zup.edu.biblioteca.model.TipoUsuario.PADRAO;
 import static javax.persistence.LockModeType.READ;
+
 //10
 @Component
-public  class ValidacaoParaEmprestimoPorTipoDeUsuarioPadrao implements ValidacaoEmprestimo{
+public class ValidacaoParaEmprestimoPorTipoDeUsuarioPadrao implements ValidacaoEmprestimo {
 
     //1
     private final ExecutorTransacional execTransacional;
+    private static final String BUSQUE_AQUANTIDADE_DE_EXEMPLARES_LIVRES = "SELECT COUNT(e) FROM Exemplar " +
+            "e WHERE e.tipoCirculacao=:livre AND e.emprestado=:falso and e.livro=:livro";
+
+    private static final int QUANTIDADE_MAXIMA_DE_ALOCACAO_PARA_USUARIO_PADRAO=5;
+    private static final int QUANTIDADE_EM_DIAS_MAXIMA_DE_ALOCACAO=60;
 
     public ValidacaoParaEmprestimoPorTipoDeUsuarioPadrao(ExecutorTransacional execTransacional) {
         this.execTransacional = execTransacional;
@@ -29,62 +35,71 @@ public  class ValidacaoParaEmprestimoPorTipoDeUsuarioPadrao implements Validacao
     @Override
     public Errors handler(Errors errors, CadastroEmprestimoDeExemplarRequest request) {
         final EntityManager manager = execTransacional.getManager();
-        Usuario possivelResponsavelPeloEmprestimo = execTransacional.executor(()->manager.find(Usuario.class, request.getIdUsuario()));
-        //1
-        if(Objects.isNull(possivelResponsavelPeloEmprestimo)){
-            errors.rejectValue("idUsuario",null,"Usuario nao cadastrado");
+
+        Usuario possivelResponsavelPeloEmprestimo = execTransacional.executor(() -> manager.find(Usuario.class, request.getIdUsuario()));
+
+        if (!possivelResponsavelPeloEmprestimo.getTipoUsuario().equals(PADRAO)) {
             return errors;
         }
 
         //1
-        Livro livroDesejado=execTransacional.executor(()-> manager.find(Livro.class,request.getIdLivro()));
+        if (Objects.isNull(possivelResponsavelPeloEmprestimo)) {
+            errors.rejectValue("idUsuario", null, "Usuario nao cadastrado");
+            return errors;
+        }
 
-        if(Objects.isNull(livroDesejado)){
-            errors.rejectValue("idLivro",null,"Livro nao cadastrado");
+        //1
+        Livro livroDesejado = execTransacional.executor(() -> manager.find(Livro.class, request.getIdLivro()));
+
+        if (Objects.isNull(livroDesejado)) {
+            errors.rejectValue("idLivro", null, "Livro nao cadastrado");
             return errors;
         }
 
         String porQuantosExemplaresEsteUsuarioEResponsavel = "SELECT COUNT(e) FROM EmprestimoDeExemplar e WHERE e.usuario=:responsavel";
-        TypedQuery<Long> query = manager.createQuery(porQuantosExemplaresEsteUsuarioEResponsavel, Long.class);
-        query.setParameter("responsavel", possivelResponsavelPeloEmprestimo);
-        Integer quantidadeDeLivrosEmprestados = execTransacional.executor(()->query.getSingleResult().intValue());
+
+        TypedQuery<Long> query = manager.createQuery(porQuantosExemplaresEsteUsuarioEResponsavel, Long.class)
+                .setParameter("responsavel", possivelResponsavelPeloEmprestimo);
+
+        Integer quantidadeDeLivrosEmprestados = execTransacional.executor(() -> query.getSingleResult().intValue());
 
         //1
-        if (possivelResponsavelPeloEmprestimo.getTipoUsuario().equals(PADRAO)) {
-            //1
-            if (Objects.isNull(request.getTempoDeEmprestimoEmDias())) {
-                errors.rejectValue("tempoDeEmprestimoEmDias",null,"O Emprestimo de exemplares para usuarios do tipo padrao deve conter o tempo que pretende ficar com o livro");
-                return errors;
-            }
-            //1
-            else if (request.getTempoDeEmprestimoEmDias() > 60) {
-                errors.rejectValue("tempoDeEmprestimoEmDias",null,"O Emprestimo de exemplares deve ter no maximo tempo de 60 dias");
-                return errors;
-            }
-            //1
-            else if (quantidadeDeLivrosEmprestados > 4) {
-                errors.rejectValue("idUsuario",null,"Usuarios do tipo padrão podem ter no maximo 5 livros emprestados");
-                return errors;
-            }
 
-
-            String busqueAquantidadeDeExemplaresLivres = "SELECT COUNT(e) FROM Exemplar e WHERE e.tipoCirculacao=:livre AND e.emprestado=:falso and e.livro=:livro";
-            String ExemplaresLivres = "SELECT e FROM Exemplar e WHERE e.tipoCirculacao=:livre AND e.emprestado=:falso and e.livro=:livro";
-            manager.createQuery(ExemplaresLivres).setParameter("livre", LIVRE).setParameter("livro", livroDesejado).setParameter("falso", false).getResultList().forEach(System.out::println);
-            TypedQuery<Long> qtdExemplaresLivresQuery = manager.createQuery(busqueAquantidadeDeExemplaresLivres, Long.class);
-            qtdExemplaresLivresQuery.setParameter("livre", LIVRE);
-            qtdExemplaresLivresQuery.setParameter("livro", livroDesejado);
-            qtdExemplaresLivresQuery.setParameter("falso", false);
-            qtdExemplaresLivresQuery.setLockMode(READ);
-            int qtdExemplaraaesLivres =execTransacional.executor(()-> qtdExemplaresLivresQuery.getSingleResult().intValue());
-            Integer qtdExemplaresLivres=qtdExemplaraaesLivres;
-            //1
-            if (qtdExemplaresLivres < 1) {
-                 errors.rejectValue("idLivro",null,"Nao ah exemplares disponiveis");
-                 return errors;
-            }
+        //1
+        if (Objects.isNull(request.getTempoDeEmprestimoEmDias())) {
+            errors.rejectValue("tempoDeEmprestimoEmDias", null, "O Emprestimo de exemplares para usuarios do tipo padrao deve conter o tempo que pretende ficar com o livro");
+            return errors;
         }
-        return errors;
+        //1
+        else if (request.getTempoDeEmprestimoEmDias() > QUANTIDADE_EM_DIAS_MAXIMA_DE_ALOCACAO) {
+            errors.rejectValue("tempoDeEmprestimoEmDias", null, "O Emprestimo de exemplares deve ter no maximo tempo de 60 dias");
+            return errors;
+        }
+        //1
+        else if (quantidadeDeLivrosEmprestados > QUANTIDADE_MAXIMA_DE_ALOCACAO_PARA_USUARIO_PADRAO) {
+            errors.rejectValue("idUsuario", null, "Usuarios do tipo padrão podem ter no maximo 5 livros emprestados");
+            return errors;
+        }
+
+
+        TypedQuery<Long> qtdExemplaresLivresQuery = manager.createQuery(BUSQUE_AQUANTIDADE_DE_EXEMPLARES_LIVRES, Long.class)
+                .setParameter("livre", LIVRE)
+                .setParameter("livro", livroDesejado)
+                .setParameter("falso", false)
+                .setLockMode(READ);
+
+
+        int qtdExemplaraaesLivres = execTransacional.executor(() -> qtdExemplaresLivresQuery.getSingleResult().intValue());
+
+        Integer qtdExemplaresLivres = qtdExemplaraaesLivres;
+
+        //1
+        if (qtdExemplaresLivres < 1) {
+            errors.rejectValue("idLivro", null, "Nao ah exemplares disponiveis");
+            return errors;
+        }
+
+        return null;
     }
 
 

@@ -17,10 +17,12 @@ import static javax.persistence.LockModeType.READ;
 
 @Component
 //6
-public  class ValidacaoParaEmprestimoPorTipoDeUsuarioPesquisador implements ValidacaoEmprestimo{
+public class ValidacaoParaEmprestimoPorTipoDeUsuarioPesquisador implements ValidacaoEmprestimo {
 
     //1
     private final ExecutorTransacional execTransacional;
+
+    private static final String BUSQUE_EXEMPLAR_LIVRE = "SELECT e FROM Exemplar e WHERE e.emprestado=:falso AND e.livro=:livro";
 
     public ValidacaoParaEmprestimoPorTipoDeUsuarioPesquisador(ExecutorTransacional execTransacional) {
         this.execTransacional = execTransacional;
@@ -28,40 +30,44 @@ public  class ValidacaoParaEmprestimoPorTipoDeUsuarioPesquisador implements Vali
 
     @Override
     public Errors handler(Errors errors, CadastroEmprestimoDeExemplarRequest request) {
+
         final EntityManager manager = execTransacional.getManager();
-        Usuario possivelResponsavelPeloEmprestimo =execTransacional.executor(()-> manager.find(Usuario.class, request.getIdUsuario()));
-        //1
-        if(Objects.isNull(possivelResponsavelPeloEmprestimo)){
-            errors.rejectValue("idUsuario",null,"Usuario nao cadastrado");
+
+        Usuario possivelResponsavelPeloEmprestimo = execTransacional.executor(() -> manager.find(Usuario.class, request.getIdUsuario()));
+
+        if (!possivelResponsavelPeloEmprestimo.getTipoUsuario().equals(PESQUISADOR)) {
             return errors;
         }
 
         //1
-        Livro livroDesejado= execTransacional.executor(()->manager.find(Livro.class,request.getIdLivro()));
+        if (Objects.isNull(possivelResponsavelPeloEmprestimo)) {
+            errors.rejectValue("idUsuario", null, "Usuario nao cadastrado");
+            return errors;
+        }
 
-        if(Objects.isNull(livroDesejado)){
-            errors.rejectValue("idLivro",null,"Livro nao cadastrado");
+        //1
+        Livro livroDesejado = execTransacional.executor(() -> manager.find(Livro.class, request.getIdLivro()));
+
+        if (Objects.isNull(livroDesejado)) {
+            errors.rejectValue("idLivro", null, "Livro nao cadastrado");
             return errors;
         }
 
 
+        TypedQuery<Exemplar> qtdExemplaresLivresQuery = manager.createQuery(BUSQUE_EXEMPLAR_LIVRE, Exemplar.class)
+                .setParameter("falso", false)
+                .setParameter("livro", livroDesejado)
+                .setLockMode(READ);
+
         //1
-        if (possivelResponsavelPeloEmprestimo.getTipoUsuario().equals(PESQUISADOR)) {
+        final Boolean naoExisteExemplaresDisponives = execTransacional.executor(() -> qtdExemplaresLivresQuery.getResultList().isEmpty());
 
-            String busqueAquantidadeDeExemplaresLivres = "SELECT e FROM Exemplar e WHERE e.emprestado=:falso AND e.livro=:livro";
-            TypedQuery<Exemplar> qtdExemplaresLivresQuery = manager.createQuery(busqueAquantidadeDeExemplaresLivres, Exemplar.class);
-            qtdExemplaresLivresQuery.setParameter("falso", false);
-            qtdExemplaresLivresQuery.setParameter("livro", livroDesejado);
-            qtdExemplaresLivresQuery.setLockMode(READ);
-
-            //1
-            final Boolean naoExisteExemplaresDisponives = execTransacional.executor(() -> qtdExemplaresLivresQuery.getResultList().isEmpty());
-            if (naoExisteExemplaresDisponives) {
-                 errors.rejectValue("idLivro",null,"Nao ah exemplares disponiveis");
-                 return errors;
-            }
+        if (naoExisteExemplaresDisponives) {
+            errors.rejectValue("idLivro", null, "Nao ah exemplares disponiveis");
+            return errors;
         }
-        return errors;
+
+        return null;
     }
 
 

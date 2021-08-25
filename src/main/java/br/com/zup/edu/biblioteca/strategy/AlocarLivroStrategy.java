@@ -6,5 +6,5 @@ import br.com.zup.edu.biblioteca.model.Livro;
 import br.com.zup.edu.biblioteca.model.Usuario;
 
 public interface AlocarLivroStrategy {
-    public EmprestimoDeExemplar alocarLivro(Usuario locatario, Livro livroDesejado, Integer tempoEmDias);
+    public EmprestimoDeExemplar alocarLivro(AlugaLivroResource alugaLivroResource);
 }

@@ -12,11 +12,11 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 @Component
-public class StrategyContext {
+public class AlugaLivroStrategyContext {
     @Autowired
     private final EntityManager manager;
 
-    public StrategyContext(EntityManager manager) {
+    public AlugaLivroStrategyContext(EntityManager manager) {
 
         this.manager = manager;
     }
@@ -26,7 +26,8 @@ public class StrategyContext {
 
         Usuario usuario = manager.find(Usuario.class, request.getIdUsuario());
         Livro livro = manager.find(Livro.class, request.getIdLivro());
+        AlugaLivroResource alugaLivroResource= new AlugaLivroResource(usuario,livro, request.getTempoDeEmprestimoEmDias());
 
-        return usuario.getTipoUsuario().getAlocacaoStrategy(manager).alocarLivro(usuario, livro, request.getTempoDeEmprestimoEmDias());
+        return usuario.getTipoUsuario().getAlocacaoStrategy(manager).alocarLivro(alugaLivroResource);
     }
 }

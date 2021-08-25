@@ -3,11 +3,15 @@ package br.com.zup.edu.biblioteca.controller.requests;
 import br.com.zup.edu.biblioteca.model.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 public class CadastroEmprestimoDeExemplarRequest {
 
     @JsonProperty
+    @Positive
+    @Max(60)
     private Integer tempoDeEmprestimoEmDias;
 
     @NotNull

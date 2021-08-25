@@ -8,6 +8,7 @@ import br.com.zup.edu.biblioteca.model.Usuario;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
 import static br.com.zup.edu.biblioteca.model.TipoCirculacao.LIVRE;
 import static javax.persistence.LockModeType.READ;
@@ -21,10 +22,13 @@ public class AlocarLivroParaUsuarioPesquisadorStrategy implements AlocarLivroStr
         this.manager = manager;
     }
 
+
     @Override
-    public EmprestimoDeExemplar alocarLivro(Usuario locatario, Livro livroDesejado, Integer tempoEmDias) {
+    public EmprestimoDeExemplar alocarLivro(AlugaLivroResource resource) {
 
-
+        Usuario locatario= resource.getLocatario();
+        Livro livroDesejado= resource.getLivro();
+        Integer tempoEmDias= resource.getTempoDeEmprestimoEmDias();
 
         String busqueAquantidadeDeExemplaresLivres = "SELECT e FROM Exemplar e WHERE e.emprestado=:falso and e.livro=:livro";
         Exemplar exemplar = manager.createQuery(busqueAquantidadeDeExemplaresLivres, Exemplar.class)
