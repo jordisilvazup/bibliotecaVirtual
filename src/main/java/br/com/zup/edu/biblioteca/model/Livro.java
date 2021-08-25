@@ -41,6 +41,10 @@ public class Livro {
         return id;
     }
 
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
     public void associar(Exemplar exemplar) {
         exemplares.add(exemplar);
     }
