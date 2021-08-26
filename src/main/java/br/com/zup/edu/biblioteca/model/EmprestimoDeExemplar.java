@@ -47,4 +47,12 @@ public class EmprestimoDeExemplar {
     public Long getId() {
         return id;
     }
+
+    public Integer getTempoDeEmprestimoEmDias() {
+        return tempoDeEmprestimoEmDias;
+    }
+
+    public LocalDate getEmprestadoEm() {
+        return emprestadoEm;
+    }
 }
