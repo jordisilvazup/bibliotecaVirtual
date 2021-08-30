@@ -55,4 +55,8 @@ public class EmprestimoDeExemplar {
     public LocalDate getEmprestadoEm() {
         return emprestadoEm;
     }
+
+    public boolean atrasado(){
+        return LocalDate.now().isAfter(emprestadoEm.plusDays(tempoDeEmprestimoEmDias));
+    }
 }

@@ -23,17 +23,15 @@ public class AtrasoDeEntregaDeExemplarValidator implements ValidacaoEmprestimo {
     @Transactional
     public Errors handler(Errors errors, CadastroEmprestimoDeExemplarRequest request) {
 
-        String todosEmprestimosDoUsuario = "SELECT e FROM EmprestimoDeExemplar e where e.usuario.id=:usuario";
+        String emprestimos = "SELECT e FROM EmprestimoDeExemplar e where e.usuario.id=:usuario and e.exemplar.emprestado=true";
 
-        List<EmprestimoDeExemplar> emprestimoDeExemplarList = manager.createQuery(todosEmprestimosDoUsuario, EmprestimoDeExemplar.class)
+        List<EmprestimoDeExemplar> emprestimoDeExemplarList = manager.createQuery(emprestimos, EmprestimoDeExemplar.class)
                 .setParameter("usuario", request.getIdUsuario())
                 .getResultList();
 
         boolean existeAlgumLivroComAtraso = emprestimoDeExemplarList.stream()
-                .anyMatch(e -> e.getEmprestadoEm()
-                        .plusDays(e.getTempoDeEmprestimoEmDias().longValue())
-                        .isAfter(LocalDate.now())
-                );
+                .anyMatch(EmprestimoDeExemplar::atrasado);
+
         if(existeAlgumLivroComAtraso)
             errors.rejectValue("idUsuario",null,"Usuarios com atraso não podem realizar novos emprestimos.");
 
