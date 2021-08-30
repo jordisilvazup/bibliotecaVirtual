@@ -44,4 +44,8 @@ public class Exemplar {
         this.emprestado=true;
         this.emprestimos.add(emprestimoDeExemplar);
     }
+
+    public void devolver() {
+        this.emprestado=false;
+    }
 }

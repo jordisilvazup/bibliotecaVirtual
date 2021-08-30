@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @AutoConfigureDataJpa
 @Transactional
-class CadastrarLivroControllerTest {
+class CadastrarNovoLivroControllerTest {
     @Autowired
     private ObjectMapper mapper;
 

@@ -12,10 +12,10 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/api/v1/livros")
-public class CadastrarLivroController {
+public class CadastrarNovoLivroController {
     private final  LivroRepository repository;
 
-    public CadastrarLivroController(LivroRepository repository) {
+    public CadastrarNovoLivroController(LivroRepository repository) {
         this.repository = repository;
     }
 

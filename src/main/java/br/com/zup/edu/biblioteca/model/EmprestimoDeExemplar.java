@@ -30,6 +30,9 @@ public class EmprestimoDeExemplar {
     @Column(nullable = false)
     private LocalDate emprestadoEm=LocalDate.now();
 
+    @OneToOne(mappedBy = "emprestimo")
+    private Devolucao devolucao;
+
     public EmprestimoDeExemplar(Exemplar exemplar, Usuario usuario, Integer tempoDeEmprestimoEmDias) {
 
         this.exemplar = exemplar;
@@ -48,6 +51,10 @@ public class EmprestimoDeExemplar {
         return id;
     }
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
     public Integer getTempoDeEmprestimoEmDias() {
         return tempoDeEmprestimoEmDias;
     }
@@ -58,5 +65,10 @@ public class EmprestimoDeExemplar {
 
     public boolean atrasado(){
         return LocalDate.now().isAfter(emprestadoEm.plusDays(tempoDeEmprestimoEmDias));
+    }
+
+    public void associarDevolucao(Devolucao devolucao) {
+        exemplar.devolver();
+        this.devolucao=devolucao;
     }
 }

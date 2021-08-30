@@ -39,20 +39,7 @@ public class ValidacaoParaEmprestimoPorTipoDeUsuarioPesquisador implements Valid
             return errors;
         }
 
-        //1
-        if (Objects.isNull(possivelResponsavelPeloEmprestimo)) {
-            errors.rejectValue("idUsuario", null, "Usuario nao cadastrado");
-            return errors;
-        }
-
-        //1
         Livro livroDesejado = execTransacional.executor(() -> manager.find(Livro.class, request.getIdLivro()));
-
-        if (Objects.isNull(livroDesejado)) {
-            errors.rejectValue("idLivro", null, "Livro nao cadastrado");
-            return errors;
-        }
-
 
         TypedQuery<Exemplar> qtdExemplaresLivresQuery = manager.createQuery(BUSQUE_EXEMPLAR_LIVRE, Exemplar.class)
                 .setParameter("falso", false)
