@@ -47,4 +47,16 @@ public class EmprestimoDeExemplar {
     public Long getId() {
         return id;
     }
+
+    public Integer getTempoDeEmprestimoEmDias() {
+        return tempoDeEmprestimoEmDias;
+    }
+
+    public LocalDate getEmprestadoEm() {
+        return emprestadoEm;
+    }
+
+    public boolean atrasado(){
+        return LocalDate.now().isAfter(emprestadoEm.plusDays(tempoDeEmprestimoEmDias));
+    }
 }
