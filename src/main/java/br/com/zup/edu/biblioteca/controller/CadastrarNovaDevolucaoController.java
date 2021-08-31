@@ -7,14 +7,12 @@ import br.com.zup.edu.biblioteca.model.Usuario;
 import br.com.zup.edu.biblioteca.validators.DevolucaoDeEmprestimoValidator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -29,23 +27,20 @@ public class CadastrarNovaDevolucaoController {
     }
 
     @InitBinder
-    public void binder(WebDataBinder binder){
+    public void binder(WebDataBinder binder) {
         binder.addValidators(devolucaoDeEmprestimoValidator);
-
     }
 
     @PostMapping
     @Transactional
-    public ResponseEntity<?> cadastrarNovaDevolucao(CadastroDevolucaoLivroRequest request){
+    public ResponseEntity<?> cadastrarNovaDevolucao(@RequestBody @Valid CadastroDevolucaoLivroRequest request) {
 
-        Usuario usuario = manager.find(Usuario.class, request.getIdUsuario());
-        EmprestimoDeExemplar emprestimoDeExemplar = manager.find(EmprestimoDeExemplar.class, request.getIdEmprestimo());
+        Devolucao devolucao = request.paraDevolucao(manager);
 
-        Devolucao devolucao = request.paraDevolucao(usuario, emprestimoDeExemplar);
         manager.persist(devolucao);
 
-        final URI location = UriComponentsBuilder.fromUriString("/api/v1/devolucoes/{id}").buildAndExpand(devolucao.getId()).toUri();
+        URI location = UriComponentsBuilder.fromUriString("/api/v1/devolucoes/{id}").buildAndExpand(devolucao.getId()).toUri();
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.created(location).build();
     }
 }

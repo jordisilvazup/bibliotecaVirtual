@@ -47,40 +47,6 @@ class ValidacaoParaEmprestimoPorTipoDeUsuarioPesquisadorTest {
 
     }
 
-    @Test
-    @Transactional
-    public void oUsuarioNaoDeveEstaCadastrado() {
-
-        CadastroEmprestimoDeExemplarRequest request = new CadastroEmprestimoDeExemplarRequest(null, dddDaMassa.getId(), 7L);
-
-        Errors errors = new BeanPropertyBindingResult(request, "request");
-        validator.handler(errors, request);
-
-        String field = "idUsuario";
-        String msg = "Usuario nao cadastrado";
-        FieldError fieldError = errors.getFieldError();
-
-        assertEquals(field, fieldError.getField());
-        assertEquals(msg, fieldError.getDefaultMessage());
-
-    }
-    @Test
-    @Transactional
-    public void oLivroNaoDeveEstaCadastrado() {
-
-        CadastroEmprestimoDeExemplarRequest request = new CadastroEmprestimoDeExemplarRequest(null, 9L, jordi.getId());
-
-        Errors errors = new BeanPropertyBindingResult(request, "request");
-        validator.handler(errors, request);
-
-        String field = "idLivro";
-        String msg = "Livro nao cadastrado";
-        FieldError fieldError = errors.getFieldError();
-
-        assertEquals(field, fieldError.getField());
-        assertEquals(msg, fieldError.getDefaultMessage());
-
-    }
 
     @Test
     @Transactional

@@ -30,7 +30,7 @@ public class EmprestimoDeExemplar {
     @Column(nullable = false)
     private LocalDate emprestadoEm=LocalDate.now();
 
-    @OneToOne(mappedBy = "emprestimo")
+    @OneToOne(mappedBy = "emprestimo", cascade = CascadeType.ALL)
     private Devolucao devolucao;
 
     public EmprestimoDeExemplar(Exemplar exemplar, Usuario usuario, Integer tempoDeEmprestimoEmDias) {

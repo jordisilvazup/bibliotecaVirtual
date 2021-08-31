@@ -16,12 +16,5 @@ public class HandlerException {
         e.getBindingResult().getFieldErrors().forEach(messages::adicionarErrorPeloFieldError);
         return ResponseEntity.badRequest().body(messages);
     }
-    @ExceptionHandler(BindException.class)
-    public ResponseEntity<?> bindExeptio(BindException e) {
-        ErrorMessage messages = new ErrorMessage();
-        e.getBindingResult().getFieldErrors().forEach(messages::adicionarErrorPeloFieldError);
-        return ResponseEntity.badRequest().body(messages);
-    }
-
 }
 

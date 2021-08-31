@@ -8,7 +8,6 @@ public class Devolucao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @OneToOne
     private EmprestimoDeExemplar emprestimo;
 

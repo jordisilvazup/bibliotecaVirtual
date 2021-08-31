@@ -6,6 +6,7 @@ import br.com.zup.edu.biblioteca.model.Usuario;
 import br.com.zup.edu.biblioteca.validators.ExistId;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.EntityManager;
 import javax.validation.constraints.NotNull;
 
 
@@ -32,7 +33,9 @@ public class CadastroDevolucaoLivroRequest {
         return idEmprestimo;
     }
 
-    public Devolucao paraDevolucao(Usuario usuario, EmprestimoDeExemplar emprestimo) {
+    public Devolucao paraDevolucao(EntityManager manager) {
+        Usuario usuario = manager.find(Usuario.class, idUsuario);
+        EmprestimoDeExemplar emprestimo = manager.find(EmprestimoDeExemplar.class, idEmprestimo);
         return new Devolucao(emprestimo,usuario);
     }
 }
