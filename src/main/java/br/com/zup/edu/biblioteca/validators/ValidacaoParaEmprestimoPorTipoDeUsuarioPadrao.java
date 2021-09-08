@@ -24,8 +24,8 @@ public class ValidacaoParaEmprestimoPorTipoDeUsuarioPadrao implements ValidacaoE
     private static final String BUSQUE_AQUANTIDADE_DE_EXEMPLARES_LIVRES = "SELECT COUNT(e) FROM Exemplar " +
             "e WHERE e.tipoCirculacao=:livre AND e.emprestado=:falso and e.livro=:livro";
 
-    private static final int QUANTIDADE_MAXIMA_DE_ALOCACAO_PARA_USUARIO_PADRAO=5;
-    private static final int QUANTIDADE_EM_DIAS_MAXIMA_DE_ALOCACAO=60;
+    private static final int QUANTIDADE_MAXIMA_DE_ALOCACAO_PARA_USUARIO_PADRAO = 5;
+    private static final int QUANTIDADE_EM_DIAS_MAXIMA_DE_ALOCACAO = 60;
 
     public ValidacaoParaEmprestimoPorTipoDeUsuarioPadrao(ExecutorTransacional execTransacional) {
         this.execTransacional = execTransacional;
@@ -42,21 +42,12 @@ public class ValidacaoParaEmprestimoPorTipoDeUsuarioPadrao implements ValidacaoE
             return errors;
         }
 
-        //1
-        if (Objects.isNull(possivelResponsavelPeloEmprestimo)) {
-            errors.rejectValue("idUsuario", null, "Usuario nao cadastrado");
-            return errors;
-        }
 
         //1
         Livro livroDesejado = execTransacional.executor(() -> manager.find(Livro.class, request.getIdLivro()));
 
-        if (Objects.isNull(livroDesejado)) {
-            errors.rejectValue("idLivro", null, "Livro nao cadastrado");
-            return errors;
-        }
 
-        String porQuantosExemplaresEsteUsuarioEResponsavel = "SELECT COUNT(e) FROM EmprestimoDeExemplar e WHERE e.usuario=:responsavel";
+        String porQuantosExemplaresEsteUsuarioEResponsavel = "SELECT COUNT(e) FROM EmprestimoDeExemplar e WHERE e.usuario=:responsavel and e.exemplar.emprestado=true";
 
         TypedQuery<Long> query = manager.createQuery(porQuantosExemplaresEsteUsuarioEResponsavel, Long.class)
                 .setParameter("responsavel", possivelResponsavelPeloEmprestimo);
@@ -76,7 +67,7 @@ public class ValidacaoParaEmprestimoPorTipoDeUsuarioPadrao implements ValidacaoE
             return errors;
         }
         //1
-        else if (quantidadeDeLivrosEmprestados > QUANTIDADE_MAXIMA_DE_ALOCACAO_PARA_USUARIO_PADRAO) {
+        else if (quantidadeDeLivrosEmprestados >= QUANTIDADE_MAXIMA_DE_ALOCACAO_PARA_USUARIO_PADRAO) {
             errors.rejectValue("idUsuario", null, "Usuarios do tipo padrão podem ter no maximo 5 livros emprestados");
             return errors;
         }

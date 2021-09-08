@@ -20,11 +20,15 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.http.MediaType.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 @AutoConfigureMockMvc
 @SpringBootTest
 @AutoConfigureDataJpa
 @Transactional
-class CadastrarLivroControllerTest {
+class CadastrarNovoLivroControllerTest {
     @Autowired
     private ObjectMapper mapper;
 
@@ -39,10 +43,10 @@ class CadastrarLivroControllerTest {
         CadastroLivroRequest livroRequest=new CadastroLivroRequest("TDD na Zup Edu",new BigDecimal("250.0"),"978-8550804606");
         String request=mapper.writeValueAsString(livroRequest);
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/api/v1/livros")
-                        .contentType(MediaType.APPLICATION_JSON)
+                post("/api/v1/livros")
+                        .contentType(APPLICATION_JSON)
                         .content(request)
-        ).andExpect(MockMvcResultMatchers.redirectedUrlPattern("/api/v1/livros/*"));
+        ).andExpect(redirectedUrlPattern("/api/v1/livros/*"));
     }
 
     @Test
@@ -55,12 +59,12 @@ class CadastrarLivroControllerTest {
         errorMessage.adicionarError("isbn","Já esta cadastrado na base da dados");
         String response=mapper.writeValueAsString(errorMessage);
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/api/v1/livros")
-                        .contentType(MediaType.APPLICATION_JSON)
+                post("/api/v1/livros")
+                        .contentType(APPLICATION_JSON)
                         .content(request)
         )
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.content().json(response));
+                .andExpect(status().isBadRequest())
+                .andExpect(content().json(response));
 
     }
 

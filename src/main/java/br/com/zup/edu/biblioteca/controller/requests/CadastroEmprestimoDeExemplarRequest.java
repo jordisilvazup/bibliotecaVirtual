@@ -1,6 +1,7 @@
 package br.com.zup.edu.biblioteca.controller.requests;
 
 import br.com.zup.edu.biblioteca.model.*;
+import br.com.zup.edu.biblioteca.validators.ExistId;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.Max;
@@ -15,11 +16,13 @@ public class CadastroEmprestimoDeExemplarRequest {
     private Integer tempoDeEmprestimoEmDias;
 
     @NotNull
+    @ExistId(domainClass = Livro.class, message = "Livro nao cadastrado")
     @JsonProperty
     private Long idLivro;
 
     @NotNull
     @JsonProperty
+    @ExistId(domainClass = Usuario.class, message = "Usuario nao cadastrado")
     private Long idUsuario;
 
     public CadastroEmprestimoDeExemplarRequest(Integer tempoDeEmprestimoEmDias, Long idLivro, Long idUsuario) {

@@ -30,6 +30,7 @@ class ValidacaoParaEmprestimoPorTipoDeUsuarioPadraoTest {
     private Exemplar exemplar3;
     private Exemplar exemplar4;
     private Exemplar exemplar5;
+    private Exemplar exemplar6;
     private EmprestimoDeExemplar emp1;
     private EmprestimoDeExemplar emp2;
     private EmprestimoDeExemplar emp3;
@@ -52,13 +53,13 @@ class ValidacaoParaEmprestimoPorTipoDeUsuarioPadraoTest {
         this.exemplar3 = new Exemplar(TipoCirculacao.LIVRE, dddDaMassa);
         this.exemplar4 = new Exemplar(TipoCirculacao.LIVRE, dddDaMassa);
         this.exemplar5 = new Exemplar(TipoCirculacao.LIVRE, dddDaMassa);
+        this.exemplar6 = new Exemplar(TipoCirculacao.LIVRE, dddDaMassa);
 
         executorTransacional.salvar(exemplar1);
         executorTransacional.salvar(exemplar2);
         executorTransacional.salvar(exemplar3);
         executorTransacional.salvar(exemplar4);
         executorTransacional.salvar(exemplar5);
-
 
         this.emp1 = new EmprestimoDeExemplar(exemplar1, jordi, 45);
         executorTransacional.salvar(emp1);
@@ -74,41 +75,6 @@ class ValidacaoParaEmprestimoPorTipoDeUsuarioPadraoTest {
 
         this.emp5 = new EmprestimoDeExemplar(exemplar5, jordi, 45);
         executorTransacional.salvar(emp5);
-    }
-
-    @Test
-    @Transactional
-    public void oUsuarioNaoDeveEstaCadastrado() {
-
-        CadastroEmprestimoDeExemplarRequest request = new CadastroEmprestimoDeExemplarRequest(null, dddDaMassa.getId(), 7L);
-
-        Errors errors = new BeanPropertyBindingResult(request, "request");
-        validator.handler(errors, request);
-
-        String field = "idUsuario";
-        String msg = "Usuario nao cadastrado";
-        FieldError fieldError = errors.getFieldError();
-
-        assertEquals(field, fieldError.getField());
-        assertEquals(msg, fieldError.getDefaultMessage());
-
-    }
-    @Test
-    @Transactional
-    public void oLivroNaoDeveEstaCadastrado() {
-
-        CadastroEmprestimoDeExemplarRequest request = new CadastroEmprestimoDeExemplarRequest(null, 9L, jordi.getId());
-
-        Errors errors = new BeanPropertyBindingResult(request, "request");
-        validator.handler(errors, request);
-
-        String field = "idLivro";
-        String msg = "Livro nao cadastrado";
-        FieldError fieldError = errors.getFieldError();
-
-        assertEquals(field, fieldError.getField());
-        assertEquals(msg, fieldError.getDefaultMessage());
-
     }
 
     @Test
